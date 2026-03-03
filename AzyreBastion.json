@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "bastionHosts_Bastion_connection_name": {
+            "defaultValue": "Bastion-connection",
+            "type": "String"
+        },
+        "publicIPAddresses_vnetbostiton_IPv4_externalid": {
+            "defaultValue": "/subscriptions/c516e71f-6d47-4e41-896d-44295e620ec3/resourceGroups/My-Group/providers/Microsoft.Network/publicIPAddresses/vnetbostiton-IPv4",
+            "type": "String"
+        },
+        "virtualNetworks_vnetbostiton_externalid": {
+            "defaultValue": "/subscriptions/c516e71f-6d47-4e41-896d-44295e620ec3/resourceGroups/My-Group/providers/Microsoft.Network/virtualNetworks/vnetbostiton",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/bastionHosts",
+            "apiVersion": "2024-07-01",
+            "name": "[parameters('bastionHosts_Bastion_connection_name')]",
+            "location": "koreacentral",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {
+                "dnsName": "bst-d79aa1fb-dafe-4ceb-bf2e-e485b28de778.bastion.azure.com",
+                "scaleUnits": 2,
+                "enableTunneling": false,
+                "enableIpConnect": false,
+                "disableCopyPaste": false,
+                "enableShareableLink": false,
+                "enableKerberos": false,
+                "enableSessionRecording": false,
+                "enablePrivateOnlyBastion": false,
+                "ipConfigurations": [
+                    {
+                        "name": "IpConf",
+                        "id": "[concat(resourceId('Microsoft.Network/bastionHosts', parameters('bastionHosts_Bastion_connection_name')), '/bastionHostIpConfigurations/IpConf')]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[parameters('publicIPAddresses_vnetbostiton_IPv4_externalid')]"
+                            },
+                            "subnet": {
+                                "id": "[concat(parameters('virtualNetworks_vnetbostiton_externalid'), '/subnets/AzureBastionSubnet')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
