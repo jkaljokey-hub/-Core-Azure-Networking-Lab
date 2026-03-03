@@ -1,0 +1,77 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkInterfaces_appserver970_z1_name": {
+            "defaultValue": "appserver970_z1",
+            "type": "String"
+        },
+        "publicIPAddresses_AppServer_ip_externalid": {
+            "defaultValue": "/subscriptions/c516e71f-6d47-4e41-896d-44295e620ec3/resourceGroups/My-Group/providers/Microsoft.Network/publicIPAddresses/AppServer-ip",
+            "type": "String"
+        },
+        "virtualNetworks_vnet_koreacentral_externalid": {
+            "defaultValue": "/subscriptions/c516e71f-6d47-4e41-896d-44295e620ec3/resourceGroups/My-Group/providers/Microsoft.Network/virtualNetworks/vnet-koreacentral",
+            "type": "String"
+        },
+        "applicationSecurityGroups_App_nsg_externalid": {
+            "defaultValue": "/subscriptions/c516e71f-6d47-4e41-896d-44295e620ec3/resourceGroups/My-Group/providers/Microsoft.Network/applicationSecurityGroups/App-nsg",
+            "type": "String"
+        },
+        "networkSecurityGroups_AppServernsg942_externalid": {
+            "defaultValue": "/subscriptions/c516e71f-6d47-4e41-896d-44295e620ec3/resourceGroups/My-Group/providers/Microsoft.Network/networkSecurityGroups/AppServernsg942",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2024-07-01",
+            "name": "[parameters('networkInterfaces_appserver970_z1_name')]",
+            "location": "koreacentral",
+            "kind": "Regular",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_appserver970_z1_name')), '/ipConfigurations/ipconfig1')]",
+                        "type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+                        "properties": {
+                            "privateIPAddress": "172.16.2.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[parameters('publicIPAddresses_AppServer_ip_externalid')]",
+                                "properties": {
+                                    "deleteOption": "Detach"
+                                }
+                            },
+                            "subnet": {
+                                "id": "[concat(parameters('virtualNetworks_vnet_koreacentral_externalid'), '/subnets/snet-koreacentral-3')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4",
+                            "applicationSecurityGroups": [
+                                {
+                                    "id": "[parameters('applicationSecurityGroups_App_nsg_externalid')]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": true,
+                "enableIPForwarding": false,
+                "disableTcpStateTracking": false,
+                "networkSecurityGroup": {
+                    "id": "[parameters('networkSecurityGroups_AppServernsg942_externalid')]"
+                },
+                "nicType": "Standard",
+                "auxiliaryMode": "None",
+                "auxiliarySku": "None"
+            }
+        }
+    ]
+}

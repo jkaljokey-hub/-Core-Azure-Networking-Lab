@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "applicationSecurityGroups_asg_web_name": {
+            "defaultValue": "asg-web",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/applicationSecurityGroups",
+            "apiVersion": "2024-07-01",
+            "name": "[parameters('applicationSecurityGroups_asg_web_name')]",
+            "location": "koreacentral",
+            "properties": {}
+        }
+    ]
+}
